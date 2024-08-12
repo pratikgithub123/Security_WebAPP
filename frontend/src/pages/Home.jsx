@@ -40,7 +40,7 @@ const Home = () => {
     // Sort products by price (assuming there's a `productPrice` field)
     const sortedByPrice = products.sort((a, b) => a.productPrice - b.productPrice);
 
-    // Get the first 3 products for the best offers section
+    
     const bestOffers = sortedByPrice.slice(0, 3);
 
     return (
