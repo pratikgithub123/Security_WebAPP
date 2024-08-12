@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { addtoCartsApi } from '../apis/Api';
 
 const Card = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
   const user = JSON.parse(localStorage.getItem("user")); 
-  const userId = user?._id; 
+  const userId = user?._id;
+  const navigate = useNavigate();
 
   const handleAddToCart = async () => {
     if (!userId) {
-      console.error('User ID is missing');
+      toast.warn('Please log in to add items to the cart');
+      navigate('/login'); // Redirect to login if user is not logged in
       return;
     }
 
@@ -23,12 +25,14 @@ const Card = ({ product }) => {
     try {
       const response = await addtoCartsApi(formData);
       if (response.data.success) {
-        toast.success('Item Added Successfully')
-        console.log(`Added ${product.productName} to the cart  ${quantity} piece`);
+        toast.success('Item Added Successfully');
+        console.log(`Added ${product.productName} to the cart ${quantity} piece`);
       } else {
+        toast.error('Error adding item to cart');
         console.error('Error adding to cart:', response.data.message);
       }
     } catch (error) {
+      toast.error('Error adding item to cart');
       console.error('Error adding to cart:', error.message);
     }
   };
@@ -44,7 +48,7 @@ const Card = ({ product }) => {
         <div className="product-info">
           <h3>{product.productName}</h3>
           <label>
-            Catergory: <h7>{product.productCategory}</h7>
+            Category: <h7>{product.productCategory}</h7>
           </label>
           
           <div>

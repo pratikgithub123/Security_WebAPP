@@ -2,6 +2,7 @@ import { faShoppingCart, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify'; // Import toast
 import { getCart } from '../apis/Api'; // Function to fetch cart data
 import logo from '../assets/logo.png';
 import './Navbar.css';
@@ -14,6 +15,13 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.clear();
     navigate('/login');
+  };
+
+  const handleCartClick = () => {
+    if (!user) {
+      toast.warn('Please log in to view your cart.');
+      navigate('/login');
+    }
   };
 
   useEffect(() => {
@@ -38,7 +46,7 @@ const Navbar = () => {
     };
 
     fetchCartData(); // Fetch initially
-    const interval = setInterval(fetchCartData, 100); // Fetch every 10 seconds
+    const interval = setInterval(fetchCartData, 100); // Fetch every 100 miliseconds
 
     return () => clearInterval(interval); // Clean up on component unmount
   }, [user]);
@@ -94,16 +102,14 @@ const Navbar = () => {
         )}
       </ul>
       {user && !user.isAdmin ? (
-        <Link to={`/cart/${user._id}`} className='cart-container'>
+        <Link to={`/cart/${user._id}`} className='cart-container' onClick={handleCartClick}>
           <FontAwesomeIcon icon={faShoppingCart} className='cart' />
           {uniqueProductCount > 0 && <span className='cart-quantity'>{uniqueProductCount}</span>}
         </Link>
       ) : (
-        user ? null : (
-          <Link to="/login" className='cart-container'>
-            <FontAwesomeIcon icon={faShoppingCart} className='cart' />
-          </Link>
-        )
+        <Link to="/login" className='cart-container' onClick={handleCartClick}>
+          <FontAwesomeIcon icon={faShoppingCart} className='cart' />
+        </Link>
       )}
     </div>
   );
