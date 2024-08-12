@@ -1,0 +1,36 @@
+.add-to-cart-btn {
+    background-color: green;
+    color: #fff;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .add-to-cart-btn:hover {
+    background-color: black;
+  }
+  
+  .quantity-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .quantity-label {
+    margin-right: 10px;
+  }
+  
+  .quantity-input {
+    width: 50px;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .quantity-unit {
+    margin-left: 5px;
+  }
+ 
+  

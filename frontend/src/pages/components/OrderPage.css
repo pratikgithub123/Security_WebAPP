@@ -1,0 +1,88 @@
+/* Styles for the container holding all orders */
+.orders-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Header styling */
+.orders-header {
+    margin-bottom: 20px;
+}
+
+.orders-header h1 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+}
+
+/* Individual order item styling */
+.order-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.order-item h2 {
+    font-size: 20px;
+    color: #444;
+}
+
+.order-details {
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: #666;
+}
+
+.order-details p {
+    margin: 5px 0;
+}
+
+/* List styling for order items */
+.order-items-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.order-items-list li {
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+}
+
+.order-item-details p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #555;
+}
+
+/* Styling for total price */
+.order-total-price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 10px;
+}
+
+/* Delete button styling */
+.delete-button {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    display: block;
+    margin: 10px auto 0;
+    transition: background-color 0.3s ease;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+}
