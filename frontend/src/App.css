@@ -1,0 +1,39 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  }
+  .container{
+    width:1000vw;
+    min-height:100vh;
+    background: #ced8ff;
+    font-family: 'Times New Roman', Times, serif;
+  
+  }
+
+  .userdetails{
+    
+    text-decoration: none; 
+    color: #242424;
+  
+  }
+  .productdetails{
+    text-decoration: none; 
+    color: #242424;
+
+  }
+  .btn btn-danger addproduct{
+    color: black;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+
+.main {
+  min-height: calc(100vh - 150px);
+}
