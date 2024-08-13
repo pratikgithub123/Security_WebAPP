@@ -12,6 +12,8 @@ const authGuard = (req, res, next) => {
         message: "Authorization header missing!",
       });
     }
+
+    
   
     const token = authHeader.split(' ')[1];
     if (!token) {

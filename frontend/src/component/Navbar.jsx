@@ -1,11 +1,12 @@
-import { faShoppingCart, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify'; // Import toast
-import { getCart } from '../apis/Api'; // Function to fetch cart data
+import { toast } from 'react-toastify';
+import { getCart } from '../apis/Api';
 import logo from '../assets/logo.png';
 import './Navbar.css';
+import { faShoppingCart, faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 
 const Navbar = () => {
   const [uniqueProductCount, setUniqueProductCount] = useState(0);
@@ -33,22 +34,22 @@ const Navbar = () => {
               const uniqueProducts = response.cart.items.length;
               setUniqueProductCount(uniqueProducts);
             } else {
-              setUniqueProductCount(0); // Ensure count is 0 if no cart is found
+              setUniqueProductCount(0);
             }
           })
           .catch(error => {
             console.error('Error fetching cart:', error);
-            setUniqueProductCount(0); // Reset count on error
+            setUniqueProductCount(0);
           });
       } else {
-        setUniqueProductCount(0); // Ensure count is 0 if no user is logged in
+        setUniqueProductCount(0);
       }
     };
 
-    fetchCartData(); // Fetch initially
-    const interval = setInterval(fetchCartData, 100); // Fetch every 100 miliseconds
+    fetchCartData(); 
+    const interval = setInterval(fetchCartData, 100); 
 
-    return () => clearInterval(interval); // Clean up on component unmount
+    return () => clearInterval(interval);
   }, [user]);
 
   return (
@@ -64,7 +65,7 @@ const Navbar = () => {
           <Link to="/products">Products</Link>
         </li>
         
-        {user && !user.isAdmin && ( // Render Orders link only if not an admin
+        {user && !user.isAdmin && (
           <li>
             <Link to="/orders">Orders</Link>
           </li>
@@ -78,13 +79,17 @@ const Navbar = () => {
                 </div>
               </li>
             )}
-            
             <li>
               {user.isAdmin ? (
                 <span>Welcome Admin, {user.fullname}</span>
               ) : (
                 <span>Welcome, {user.fullname}</span>
               )}
+            </li>
+            <li>
+              <Link to="/profile">
+                <FontAwesomeIcon icon={faUser} className='profile-icon' />
+              </Link>
             </li>
             <li onClick={handleLogout}>
               <FontAwesomeIcon icon={faSignOutAlt} />

@@ -1,6 +1,7 @@
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { deleteOrderApi, getAllOrdersApi } from '../../apis/Api';
 
@@ -47,6 +48,12 @@ const AdminDashboardOrderPage = () => {
         <div className="m-5">
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1>Order Management</h1>
+                <Link to="/admin/dashboarduser" className="userdetails">
+                    User Details <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '5px' }} />
+                </Link>
+                <Link to="/admin/dashboard" className="productdetails">
+            Product Details <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '5px' }} />
+          </Link>
             </div>
 
             <div>

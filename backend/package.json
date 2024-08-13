@@ -23,9 +23,12 @@
     "mongodb": "^6.8.0",
     "mongoos": "^0.0.1-security",
     "mongoose": "^7.5.4",
+    "mongoose-unique-validator": "^5.0.1",
     "multer": "^1.4.5-lts.1",
     "multiparty": "^4.2.3",
     "react-redux": "^9.1.0",
+    "react-toastify": "^10.0.5",
+    "stripe": "^16.7.0",
     "ws": "^8.18.0"
   },
   "devDependencies": {
