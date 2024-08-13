@@ -1,12 +1,11 @@
+import { faShoppingCart, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { getCart } from '../apis/Api';
+import { toast } from 'react-toastify'; // Import toast
+import { getCart } from '../apis/Api'; // Function to fetch cart data
 import logo from '../assets/logo.png';
 import './Navbar.css';
-import { faShoppingCart, faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 
 const Navbar = () => {
   const [uniqueProductCount, setUniqueProductCount] = useState(0);
@@ -15,6 +14,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.clear();
+    toast.success('You have successfully logged out.'); // Show success toast
     navigate('/login');
   };
 
@@ -27,29 +27,29 @@ const Navbar = () => {
 
   useEffect(() => {
     const fetchCartData = () => {
-      if (user) {
+      if (user && !user.isAdmin) { // Only fetch cart data for non-admin users
         getCart(user._id)
           .then(response => {
             if (response.success) {
               const uniqueProducts = response.cart.items.length;
               setUniqueProductCount(uniqueProducts);
             } else {
-              setUniqueProductCount(0);
+              setUniqueProductCount(0); // Ensure count is 0 if no cart is found
             }
           })
           .catch(error => {
             console.error('Error fetching cart:', error);
-            setUniqueProductCount(0);
+            setUniqueProductCount(0); // Reset count on error
           });
       } else {
-        setUniqueProductCount(0);
+        setUniqueProductCount(0); // Ensure count is 0 if no user is logged in or user is admin
       }
     };
 
-    fetchCartData(); 
-    const interval = setInterval(fetchCartData, 100); 
+    fetchCartData(); // Fetch initially
+    const interval = setInterval(fetchCartData, 100); // Adjusted interval to every 100 miliseconds
 
-    return () => clearInterval(interval);
+    return () => clearInterval(interval); // Clean up on component unmount
   }, [user]);
 
   return (
@@ -65,7 +65,7 @@ const Navbar = () => {
           <Link to="/products">Products</Link>
         </li>
         
-        {user && !user.isAdmin && (
+        {user && !user.isAdmin && ( // Render Orders link only if not an admin
           <li>
             <Link to="/orders">Orders</Link>
           </li>
@@ -79,17 +79,13 @@ const Navbar = () => {
                 </div>
               </li>
             )}
+            
             <li>
               {user.isAdmin ? (
                 <span>Welcome Admin, {user.fullname}</span>
               ) : (
                 <span>Welcome, {user.fullname}</span>
               )}
-            </li>
-            <li>
-              <Link to="/profile">
-                <FontAwesomeIcon icon={faUser} className='profile-icon' />
-              </Link>
             </li>
             <li onClick={handleLogout}>
               <FontAwesomeIcon icon={faSignOutAlt} />
@@ -106,14 +102,10 @@ const Navbar = () => {
           </>
         )}
       </ul>
-      {user && !user.isAdmin ? (
-        <Link to={`/cart/${user._id}`} className='cart-container' onClick={handleCartClick}>
+      {!user?.isAdmin && ( // Render cart icon only if not an admin
+        <Link to={`/cart/${user?._id}`} className='cart-container' onClick={handleCartClick}>
           <FontAwesomeIcon icon={faShoppingCart} className='cart' />
           {uniqueProductCount > 0 && <span className='cart-quantity'>{uniqueProductCount}</span>}
-        </Link>
-      ) : (
-        <Link to="/login" className='cart-container' onClick={handleCartClick}>
-          <FontAwesomeIcon icon={faShoppingCart} className='cart' />
         </Link>
       )}
     </div>

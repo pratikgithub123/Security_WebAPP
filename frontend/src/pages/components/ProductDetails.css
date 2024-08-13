@@ -15,7 +15,7 @@
 }
 
 .product-image {
-  width: 20%;
+  width: 30%;
   height: auto; /* Ensure the image maintains its aspect ratio */
   margin-bottom: 20px;
 }
@@ -40,7 +40,7 @@
 }
 
 .add-to-cart-btn:hover {
-  background-color: #45a049;
+  background-color: black;
 }
 
 .loading-spinner {

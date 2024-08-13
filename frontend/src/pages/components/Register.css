@@ -55,8 +55,9 @@
     transition: background-color 0.3s, color 0.3s;
   }
   
+  
   .btn-success:hover {
-    background-color: #4CAF50; /* Green background on hover */
+    background-color: grey; 
     color: white; /* White text on hover */
   }
   
@@ -67,5 +68,30 @@
 
   .text-center {
     text-align: center;
+  }
+  .register-button {
+    background-color: black; /* Button background color */
+    color: white; /* Button text color */
+    border: 2px solid black; /* Button border color */
+    padding: 10px 20px; /* Padding for the button */
+    cursor: pointer; /* Pointer cursor on hover */
+    border-radius: 5px; /* Rounded corners */
+    width: 100%; /* Full width */
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Smooth transition for hover effects */
+  }
+  
+  .register-button:hover,
+  .register-button:focus {
+    background-color: black; /* Maintain black background on hover and focus */
+    color: white; /* Maintain white text color on hover and focus */
+    border-color: black; /* Maintain black border color on hover and focus */
+  }
+  
+  .login-register-link {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    text-decoration: none;
+    color: black; /* Link color */
   }
   

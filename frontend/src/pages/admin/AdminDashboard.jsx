@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { createProductApi, deleteProductApi, getAllProductsApi } from '../../apis/Api';
+import '../components/AdminDashboard.css'; // Import custom CSS
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -67,7 +68,7 @@ const AdminDashboard = () => {
                     toast.error(res.data.message);
                 } else {
                     toast.success(res.data.message);
-                    window.location.reload();
+                    setProducts(products.filter(product => product._id !== id));
                 }
             }).catch((err) => {
                 console.log(err);
@@ -77,47 +78,74 @@ const AdminDashboard = () => {
     };
 
     return (
-        <div className='m-4'>
-            <div className='d-flex justify-content-between'>
+        <div className='admin-dashboard'>
+            <div className='header'>
                 <h1>Product Details</h1>
-                <button type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <button type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#addProductModal">
                     Add Product
                 </button>
-                <Link to="/admin/dashboarduser" className="userdetails">
-                    User Details <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '5px' }} />
-                </Link>
-                <Link to="/admin/dashboardorder" className="orderdetails">
-                    Orderdetails <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '5px' }} />
-                </Link>
+                <div className='links'>
+                    <Link to="/admin/dashboarduser" className="link">
+                        User Details <FontAwesomeIcon icon={faArrowRight} />
+                    </Link>
+                    <Link to="/admin/dashboardorder" className="link">
+                        Order Details <FontAwesomeIcon icon={faArrowRight} />
+                    </Link>
+                </div>
             </div>
 
-            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div className="modal-dialog">
+            <div className="modal fade" id="addProductModal" tabIndex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h1 className="modal-title fs-5" id="exampleModalLabel">Create a new product!</h1>
+                            <h5 className="modal-title" id="addProductModalLabel">Create a New Product</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <label>Product Name</label>
-                            <input onChange={(e) => setProductName(e.target.value)} className='form-control mb-2' type="text" placeholder='Enter product name' />
+                            <form>
+                                <label>Product Name</label>
+                                <input
+                                    onChange={(e) => setProductName(e.target.value)}
+                                    className='form-control mb-2'
+                                    type="text"
+                                    placeholder='Enter product name'
+                                />
 
-                            <label htmlFor="">Product Description</label>
-                            <textarea onChange={(e) => setProductDescription(e.target.value)} className='form-control mb-2' placeholder="Enter description" cols="4" rows="4"></textarea>
+                                <label>Product Description</label>
+                                <textarea
+                                    onChange={(e) => setProductDescription(e.target.value)}
+                                    className='form-control mb-2'
+                                    placeholder="Enter description"
+                                    cols="4"
+                                    rows="4"
+                                ></textarea>
 
-                            <label htmlFor="">Price</label>
-                            <input onChange={(e) => setProductPrice(e.target.value)} type="number" className='form-control mb-2' placeholder='Enter your price' />
+                                <label>Price</label>
+                                <input
+                                    onChange={(e) => setProductPrice(e.target.value)}
+                                    type="number"
+                                    className='form-control mb-2'
+                                    placeholder='Enter your price'
+                                />
 
-                            <label htmlFor="">Select category</label>
-                            <select onChange={(e) => setProductCategory(e.target.value)} className='form-control mb-2'>
-                                <option value="Indoor">Indoor</option>
-                                <option value="Outdoor">Outdoor</option>
-                            </select>
+                                <label>Select Category</label>
+                                <select
+                                    onChange={(e) => setProductCategory(e.target.value)}
+                                    className='form-control mb-2'
+                                >
+                                    <option value="Indoor">Indoor</option>
+                                    <option value="Outdoor">Outdoor</option>
+                                </select>
 
-                            <label>Product Image</label>
-                            <input onChange={handleImageUpload} type="file" className='form-control' />
+                                <label>Product Image</label>
+                                <input
+                                    onChange={handleImageUpload}
+                                    type="file"
+                                    className='form-control'
+                                />
 
-                            {previewImage && <img src={previewImage} className='img-fluid rounded object-cover mt-2' alt="preview" />}
+                                {previewImage && <img src={previewImage} className='img-fluid rounded mt-2' alt="preview" />}
+                            </form>
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -127,7 +155,7 @@ const AdminDashboard = () => {
                 </div>
             </div>
 
-            <table className='table mt-2'>
+            <table className='table mt-4'>
                 <thead className='table-dark'>
                     <tr>
                         <th>Product Image</th>
@@ -141,15 +169,15 @@ const AdminDashboard = () => {
                 <tbody>
                     {products.map((item) => (
                         <tr key={item._id}>
-                            <td><img src={item.productImageUrl} height={40} width={40} alt="product" /></td>
+                            <td><img src={item.productImageUrl} height={50} width={50} alt="product" /></td>
                             <td>{item.productName}</td>
                             <td>Rs.{item.productPrice}</td>
                             <td>{item.productCategory}</td>
-                            <td>{item.productDescription.slice(0, 10)}....</td>
+                            <td>{item.productDescription.slice(0, 20)}...</td>
                             <td>
-                                <div className="btn-group" role="group" aria-label="Basic example">
-                                    <Link to={`/admin/edit/${item._id}`} type="button" className="btn btn-success">Edit</Link>
-                                    <button onClick={() => handleDelete(item._id)} type="button" className="btn btn-danger">Delete</button>
+                                <div className="btn-group" role="group" aria-label="Product Actions">
+                                    <Link to={`/admin/edit/${item._id}`} className="btn btn-success">Edit</Link>
+                                    <button onClick={() => handleDelete(item._id)} className="btn btn-danger">Delete</button>
                                 </div>
                             </td>
                         </tr>

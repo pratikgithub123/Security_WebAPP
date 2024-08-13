@@ -51,6 +51,17 @@
     background-color: black;
     color: white;
   }
+  .login-button:hover {
+    background-color: grey;
+  }
+
+ 
+.login-button:focus {
+  background-color: darkgrey; 
+  color: white; 
+  border-color: grey; 
+  box-shadow: none; 
+}
   
   
 .login-register-link {

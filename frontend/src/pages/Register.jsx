@@ -15,63 +15,34 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const changeFullName = (e) => {
-    setFullName(e.target.value);
-  };
-
-  const changeLocation = (e) => {
-    setLocation(e.target.value);
-  };
-
+  const changeFullName = (e) => setFullName(e.target.value);
+  const changeLocation = (e) => setLocation(e.target.value);
   const changePhoneNum = (e) => {
-    const input = e.target.value;
-    // Replace any non-digit characters with an empty string
-    const formattedInput = input.replace(/\D/g, '');
-    // Limit to 10 digits
-    const limitedInput = formattedInput.slice(0, 10);
-    setPhoneNum(limitedInput);
+    const input = e.target.value.replace(/\D/g, '');
+    setPhoneNum(input.slice(0, 10));
   };
-
-  const changeEmail = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const changePassword = (e) => {
-    setPassword(e.target.value);
-  };
+  const changeEmail = (e) => setEmail(e.target.value);
+  const changePassword = (e) => setPassword(e.target.value);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Simple form validation
     if (!fullname || !location || !phonenum || !email || !password) {
       toast.error('Please fill in all fields.');
       return;
     }
-
-    // Check if email contains "@gmail.com"
     if (!email.includes('@gmail.com')) {
       toast.error('Please enter a valid Gmail address.');
       return;
     }
-
-    // Check if phone number is exactly 10 digits
     if (phonenum.length !== 10) {
       toast.error('Phone number should be exactly 10 digits.');
       return;
     }
 
-    const data = {
-      fullname: fullname,
-      location: location,
-      phonenum: phonenum,
-      email: email,
-      password: password,
-    };
-
+    const data = { fullname, location, phonenum, email, password };
     registerApi(data)
       .then((res) => {
-        if (res.data.success === true) {
+        if (res.data.success) {
           toast.success(res.data.message);
           navigate('/login');
         } else {
@@ -89,90 +60,86 @@ const Register = () => {
       <img src={topRightImage} alt="Top Right" className="top-right-image" />
       <img src={bottomLeftImage} alt="Bottom Left" className="bottom-left-image" />
       <div className="register-form-container">
-        <h1 className='m-3 register-title'> Create an Account!</h1>
+        <h1 className="register-title">Create an Account!</h1>
         <form>
+          {/* Form Fields */}
           <label className="register-label">Full Name</label>
           <div className="input-group mb-2">
-            <span className="input-group-text" style={{ borderColor: 'black' }}>
+            <span className="input-group-text">
               <FaUser />
             </span>
             <input
               onChange={changeFullName}
               value={fullname}
-              className='form-control'
+              className="form-control"
               type="text"
-              placeholder='Enter your Full Name'
-              style={{ borderColor: 'black' }}
+              placeholder="Enter your Full Name"
             />
           </div>
 
           <label className="register-label">Location</label>
           <div className="input-group mb-2">
-            <span className="input-group-text" style={{ borderColor: 'black' }}>
+            <span className="input-group-text">
               <FaMapMarkerAlt />
             </span>
             <input
               onChange={changeLocation}
               value={location}
-              className='form-control'
+              className="form-control"
               type="text"
-              placeholder='Enter your location'
-              style={{ borderColor: 'black' }}
+              placeholder="Enter your location"
             />
           </div>
 
           <label className="register-label">Phone Number</label>
           <div className="input-group mb-2">
-            <span className="input-group-text" style={{ borderColor: 'black' }}>
+            <span className="input-group-text">
               <FaPhone />
             </span>
             <input
               onChange={changePhoneNum}
               value={phonenum}
-              className='form-control'
+              className="form-control"
               type="text"
-              placeholder='Enter your phone number'
-              style={{ borderColor: 'black' }}
+              placeholder="Enter your phone number"
             />
           </div>
 
           <label className="register-label">Email</label>
           <div className="input-group mb-2">
-            <span className="input-group-text" style={{ borderColor: 'black' }}>
+            <span className="input-group-text">
               <FaEnvelope />
             </span>
             <input
               onChange={changeEmail}
               value={email}
-              className='form-control'
+              className="form-control"
               type="email"
-              placeholder='Enter your email'
-              style={{ borderColor: 'black' }}
+              placeholder="Enter your email"
             />
           </div>
 
           <label className="register-label">Password</label>
           <div className="input-group mb-2">
-            <span className="input-group-text" style={{ borderColor: 'black' }}>
+            <span className="input-group-text">
               <FaLock />
             </span>
             <input
               onChange={changePassword}
               value={password}
-              className='form-control'
+              className="form-control"
               type="password"
-              placeholder='Enter your password'
-              style={{ borderColor: 'black' }}
+              placeholder="Enter your password"
             />
           </div>
 
           <button
             onClick={handleSubmit}
-            className='btn btn-outline-success w-100 login-buttonyy'
-            style={{ backgroundColor: 'black', color: 'white' }}
+            className="register-button"
           >
             Register
           </button>
+
           <Link className="login-register-link" to="/login">
             Already have an account? Log in
           </Link>

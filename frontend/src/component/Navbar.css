@@ -31,7 +31,7 @@
   font-size: 0.75em;
 }
 .cart {
-  font-size: 24px; /* Adjust size as needed */
+  font-size: 24px; 
   color: black; /* Adjust color as needed */
   margin: 10px 20px;
   cursor: pointer;
@@ -144,7 +144,7 @@ ul li a:hover::before {
   
   
   ul li a:hover {
-    color: green;
+    color: orange;
     display: block; 
   }
   
