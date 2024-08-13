@@ -13,29 +13,28 @@ const Register = () => {
   const [phonenum, setPhoneNum] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
-  const changeFullName = (e) => setFullName(e.target.value);
-  const changeLocation = (e) => setLocation(e.target.value);
-  const changePhoneNum = (e) => {
-    const input = e.target.value.replace(/\D/g, '');
-    setPhoneNum(input.slice(0, 10));
+  const validateForm = () => {
+    const newErrors = {};
+    if (!fullname) newErrors.fullname = 'Full name is required';
+    if (!location) newErrors.location = 'Location is required';
+    if (!phonenum) newErrors.phonenum = 'Phone number is required';
+    else if (phonenum.length !== 10) newErrors.phonenum = 'Phone number should be exactly 10 digits';
+    if (!email) newErrors.email = 'Email is required';
+    else if (!email.includes('@gmail.com')) newErrors.email = 'Please enter a valid Gmail address';
+    if (!password) newErrors.password = 'Password is required';
+    else if (password.length < 8) newErrors.password = 'Password must be at least 8 characters long';
+    return newErrors;
   };
-  const changeEmail = (e) => setEmail(e.target.value);
-  const changePassword = (e) => setPassword(e.target.value);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!fullname || !location || !phonenum || !email || !password) {
-      toast.error('Please fill in all fields.');
-      return;
-    }
-    if (!email.includes('@gmail.com')) {
-      toast.error('Please enter a valid Gmail address.');
-      return;
-    }
-    if (phonenum.length !== 10) {
-      toast.error('Phone number should be exactly 10 digits.');
+
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
 
@@ -69,12 +68,13 @@ const Register = () => {
               <FaUser />
             </span>
             <input
-              onChange={changeFullName}
+              onChange={(e) => setFullName(e.target.value)}
               value={fullname}
-              className="form-control"
+              className={`form-control ${errors.fullname ? 'is-invalid' : ''}`}
               type="text"
               placeholder="Enter your Full Name"
             />
+            {errors.fullname && <div className="invalid-feedback">{errors.fullname}</div>}
           </div>
 
           <label className="register-label">Location</label>
@@ -83,12 +83,13 @@ const Register = () => {
               <FaMapMarkerAlt />
             </span>
             <input
-              onChange={changeLocation}
+              onChange={(e) => setLocation(e.target.value)}
               value={location}
-              className="form-control"
+              className={`form-control ${errors.location ? 'is-invalid' : ''}`}
               type="text"
               placeholder="Enter your location"
             />
+            {errors.location && <div className="invalid-feedback">{errors.location}</div>}
           </div>
 
           <label className="register-label">Phone Number</label>
@@ -97,12 +98,16 @@ const Register = () => {
               <FaPhone />
             </span>
             <input
-              onChange={changePhoneNum}
+              onChange={(e) => {
+                const input = e.target.value.replace(/\D/g, '');
+                setPhoneNum(input.slice(0, 10));
+              }}
               value={phonenum}
-              className="form-control"
+              className={`form-control ${errors.phonenum ? 'is-invalid' : ''}`}
               type="text"
               placeholder="Enter your phone number"
             />
+            {errors.phonenum && <div className="invalid-feedback">{errors.phonenum}</div>}
           </div>
 
           <label className="register-label">Email</label>
@@ -111,12 +116,13 @@ const Register = () => {
               <FaEnvelope />
             </span>
             <input
-              onChange={changeEmail}
+              onChange={(e) => setEmail(e.target.value)}
               value={email}
-              className="form-control"
+              className={`form-control ${errors.email ? 'is-invalid' : ''}`}
               type="email"
               placeholder="Enter your email"
             />
+            {errors.email && <div className="invalid-feedback">{errors.email}</div>}
           </div>
 
           <label className="register-label">Password</label>
@@ -125,12 +131,13 @@ const Register = () => {
               <FaLock />
             </span>
             <input
-              onChange={changePassword}
+              onChange={(e) => setPassword(e.target.value)}
               value={password}
-              className="form-control"
+              className={`form-control ${errors.password ? 'is-invalid' : ''}`}
               type="password"
               placeholder="Enter your password"
             />
+            {errors.password && <div className="invalid-feedback">{errors.password}</div>}
           </div>
 
           <button

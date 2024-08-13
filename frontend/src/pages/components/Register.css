@@ -86,6 +86,16 @@
     color: white; /* Maintain white text color on hover and focus */
     border-color: black; /* Maintain black border color on hover and focus */
   }
+  /* Register.css */
+.is-invalid {
+  border-color: #dc3545;
+}
+
+.invalid-feedback {
+  color: #dc3545;
+  font-size: 0.875em;
+}
+
   
   .login-register-link {
     display: block;

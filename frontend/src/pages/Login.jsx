@@ -11,6 +11,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({});
 
   const changeEmail = (e) => {
     setEmail(e.target.value);
@@ -20,8 +21,22 @@ const Login = () => {
     setPassword(e.target.value);
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    if (!email) newErrors.email = 'Email is required';
+    if (!password) newErrors.password = 'Password is required';
+    else if (password.length < 8) newErrors.password = 'Password must be at least 8 characters long';
+    return newErrors;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
 
     const data = {
       email: email,
@@ -34,7 +49,6 @@ const Login = () => {
           toast.error(res.data.message);
         } else {
           toast.success(res.data.message);
-
           localStorage.setItem('token', res.data.token);
           localStorage.setItem('user', JSON.stringify(res.data.userData));
           navigate('/');
@@ -60,10 +74,11 @@ const Login = () => {
             </span>
             <input
               onChange={changeEmail}
-              className="form-control login-input"
+              className={`form-control login-input ${errors.email ? 'is-invalid' : ''}`}
               type="email"
               placeholder="Enter your email"
             />
+            {errors.email && <div className="invalid-feedback">{errors.email}</div>}
           </div>
 
           <label className="login-label">Password</label>
@@ -73,10 +88,11 @@ const Login = () => {
             </span>
             <input
               onChange={changePassword}
-              className="form-control login-input"
+              className={`form-control login-input ${errors.password ? 'is-invalid' : ''}`}
               type="password"
               placeholder="Enter your password"
             />
+            {errors.password && <div className="invalid-feedback">{errors.password}</div>}
           </div>
 
           <button
