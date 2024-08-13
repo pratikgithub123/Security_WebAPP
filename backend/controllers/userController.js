@@ -25,6 +25,41 @@ const validatePassword = (password) => {
   return errors;
 };
 
+const guestLogin = async (req, res) => {
+  try {
+    console.log('Guest login request received');
+
+    const guestUser = {
+      _id: 'guest-' + new Date().getTime(),
+      email: 'guest@example.com',
+      isAdmin: false,
+    };
+
+    console.log('Guest user created:', guestUser);
+
+    const token = createToken(guestUser);
+
+    console.log('Token created:', token);
+
+    res.status(200).json({
+      success: true,
+      message: "Guest logged in successfully.",
+      token: token,
+      userData: guestUser,
+    });
+  } catch (error) {
+    console.error('Error in guestLogin:', error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: error,
+    });
+  }
+};
+
+
+
+
 // Create JWT token
 const createToken = (user) => {
   return jwt.sign(
@@ -321,4 +356,5 @@ module.exports = {
   getUsers,
   getUserProfile,
   deleteUser,
+  guestLogin
 };

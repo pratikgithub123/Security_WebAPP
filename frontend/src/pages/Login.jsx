@@ -31,18 +31,18 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-  
+
     const data = {
       email: email,
       password: password,
     };
-  
+
     loginApi(data)
       .then((res) => {
         if (res.data.success === false) {
@@ -50,18 +50,18 @@ const Login = () => {
             const lockoutEndTime = new Date(res.data.lockoutEndTime);
             const currentTime = new Date();
             const remainingTime = Math.max(lockoutEndTime - currentTime, 0);
-            
+
             // Calculate remaining minutes and seconds
             const remainingMinutes = Math.floor(remainingTime / 60000);
             const remainingSeconds = Math.floor((remainingTime % 60000) / 1000);
-  
+
             let message = `Account is locked. For ${remainingMinutes} minute${remainingMinutes !== 1 ? 's' : ''}`;
             if (remainingSeconds > 0) {
               message += ` and ${remainingSeconds} second${remainingSeconds !== 1 ? 's' : ''}.`;
             } else {
               message += '.';
             }
-  
+
             toast.error(message);
           } else {
             toast.error(res.data.message);
@@ -78,7 +78,29 @@ const Login = () => {
         toast.error('Server Error!');
       });
   };
-  
+
+  const handleGuestLogin = () => {
+    const guestData = {
+      email: 'guest@example.com',
+      password: 'guestpassword',
+    };
+
+    loginApi(guestData)
+      .then((res) => {
+        if (res.data.success) {
+          toast.success('Logged in as guest');
+          localStorage.setItem('token', res.data.token);
+          localStorage.setItem('user', JSON.stringify(res.data.userData));
+          navigate('/');
+        } else {
+          toast.error(res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error('Server Error!');
+      });
+  };
 
   return (
     <div className="login-container">
@@ -94,6 +116,7 @@ const Login = () => {
             </span>
             <input
               onChange={changeEmail}
+              value={email}
               className={`form-control login-input ${errors.email ? 'is-invalid' : ''}`}
               type="email"
               placeholder="Enter your email"
@@ -108,6 +131,7 @@ const Login = () => {
             </span>
             <input
               onChange={changePassword}
+              value={password}
               className={`form-control login-input ${errors.password ? 'is-invalid' : ''}`}
               type="password"
               placeholder="Enter your password"
@@ -121,6 +145,12 @@ const Login = () => {
             type="submit"
           >
             Login
+          </button>
+          <button
+            onClick={handleGuestLogin}
+            className="btn btn-outline-primary w-100 login-button mt-2"
+          >
+            Login as Guest
           </button>
           <Link className="login-register-link" to="/register">
             Create a new account?

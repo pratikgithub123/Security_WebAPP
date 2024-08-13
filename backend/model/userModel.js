@@ -66,7 +66,7 @@ userSchema.methods.isPasswordReused = function(newPassword) {
 userSchema.methods.incrementFailedAttempts = async function() {
     this.failedLoginAttempts += 1;
     if (this.failedLoginAttempts >= 5) {
-        // Lockout period: 30 minutes
+        // Lockout period: 1 minutes
         this.lockoutUntil = new Date(Date.now() + 1 * 60 * 1000);
     }
     await this.save();
