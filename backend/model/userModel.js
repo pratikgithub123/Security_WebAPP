@@ -67,7 +67,7 @@ userSchema.methods.incrementFailedAttempts = async function() {
     this.failedLoginAttempts += 1;
     if (this.failedLoginAttempts >= 5) {
         // Lockout period: 30 minutes
-        this.lockoutUntil = new Date(Date.now() + 30 * 60 * 1000);
+        this.lockoutUntil = new Date(Date.now() + 1 * 60 * 1000);
     }
     await this.save();
 };

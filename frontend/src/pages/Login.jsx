@@ -31,22 +31,41 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-
+  
     const data = {
       email: email,
       password: password,
     };
-
+  
     loginApi(data)
       .then((res) => {
         if (res.data.success === false) {
-          toast.error(res.data.message);
+          if (res.data.lockoutEndTime) {
+            const lockoutEndTime = new Date(res.data.lockoutEndTime);
+            const currentTime = new Date();
+            const remainingTime = Math.max(lockoutEndTime - currentTime, 0);
+            
+            // Calculate remaining minutes and seconds
+            const remainingMinutes = Math.floor(remainingTime / 60000);
+            const remainingSeconds = Math.floor((remainingTime % 60000) / 1000);
+  
+            let message = `Account is locked. For ${remainingMinutes} minute${remainingMinutes !== 1 ? 's' : ''}`;
+            if (remainingSeconds > 0) {
+              message += ` and ${remainingSeconds} second${remainingSeconds !== 1 ? 's' : ''}.`;
+            } else {
+              message += '.';
+            }
+  
+            toast.error(message);
+          } else {
+            toast.error(res.data.message);
+          }
         } else {
           toast.success(res.data.message);
           localStorage.setItem('token', res.data.token);
@@ -59,6 +78,7 @@ const Login = () => {
         toast.error('Server Error!');
       });
   };
+  
 
   return (
     <div className="login-container">

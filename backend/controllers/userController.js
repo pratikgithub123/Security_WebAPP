@@ -105,9 +105,14 @@ const loginUser = async (req, res) => {
     }
 
     if (user.isLockedOut()) {
+      const lockoutEndTime = user.lockoutUntil ? new Date(user.lockoutUntil).getTime() : null;
+      const currentTime = new Date().getTime();
+      const remainingTime = lockoutEndTime ? Math.max(lockoutEndTime - currentTime, 0) : 0;
+
       return res.json({
         success: false,
-        message: "Account is locked. For 30 Minutes.",
+        message: `Account is locked. For ${(remainingTime / 60000).toFixed(0)} minutes.`,
+        lockoutEndTime: lockoutEndTime,
       });
     }
 
@@ -149,6 +154,7 @@ const loginUser = async (req, res) => {
     });
   }
 };
+
 
 // Reset password
 const resetPassword = async (req, res) => {
