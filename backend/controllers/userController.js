@@ -20,6 +20,7 @@ const validatePassword = (password) => {
   }
   if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
     errors.push("Password must include at least one special character (e.g., !@#$%^&*).");
+    
   }
 
   return errors;

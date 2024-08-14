@@ -30,10 +30,12 @@ const Card = ({ product }) => {
       } else {
         toast.error('Error adding item to cart');
         console.error('Error adding to cart:', response.data.message);
+        
       }
     } catch (error) {
-      toast.error('Error adding item to cart');
+      toast.warn('You are logged in as Guest Please Login First To Add on Cart');
       console.error('Error adding to cart:', error.message);
+      navigate('/login');
     }
   };
 

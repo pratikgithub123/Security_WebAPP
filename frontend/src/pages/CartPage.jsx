@@ -59,6 +59,7 @@ const CartPage = () => {
         if (response.data.success) {
           setCartItems([]);
           toast.success("All items removed from cart");
+          
         } else {
           console.error('Error clearing cart:', response.data.message);
         }

@@ -20,11 +20,8 @@ const getConfig = () => {
 
 console.log(`Auth Header: ${localStorage.getItem('token')}`);
 
-//guest
-export const loginAsGuestApi = () => {
-    return axios.post('/api/login/guest');
-  };
-
+export const guestLoginApi = () => Api.post('/api/user/guest_login');
+  
 
 //user
 
