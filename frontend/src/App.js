@@ -25,6 +25,7 @@ import AdminDashboardOrderDetails from './pages/admin/AdminDashboardOrderDetails
 import AdminEditProduct from './pages/admin/AdminEditProduct';
 import AdminRoutes from './protected_routes/AdminRoutes';
 import UserRoutes from './protected_routes/UserRoutes';
+import AuditDashboard from './pages/AuditDashboard';
 
 function App() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -45,6 +46,7 @@ function App() {
             <Route path='/login' element={<Login />} />
             <Route path='/resetpassword' element={<ResetPassword />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/audit" element={<AuditDashboard />} />
 
             {/* User Protected Routes */}
             <Route element={<UserRoutes />}>

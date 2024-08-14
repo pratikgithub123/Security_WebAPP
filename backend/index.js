@@ -7,6 +7,7 @@ const acceptMultimedia = require('connect-multiparty');
 const cartRoutes = require('./routes/cartRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const auditRoutes = require('./routes/auditRoutes');
 
 const WebSocket = require('ws');
 const http = require('http');
@@ -47,6 +48,9 @@ app.use('/api/user', require('./routes/userRoutes'));
 app.use('/api/cart', cartRoutes);
 app.use('/api/product', productRoutes);
 app.use('/api/orders', orderRoutes);
+
+app.use('/api/audit', require('./routes/auditRoutes'));
+
 
 // WebSocket setup
 wss.on('connection', ws => {

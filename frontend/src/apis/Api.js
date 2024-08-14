@@ -66,6 +66,16 @@ export const updateProductApi = (id, formData) => {
 
 export const deleteProductApi = (id) => Api.delete(`/api/product/delete_product/${id}`);
 
+//audit
+export const getAuditLogs = async () => {
+    try {
+      const response = await axios.get('/api/audit/get_logs');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching audit logs:', error);
+      throw error;
+    }
+  };
 
 
 
