@@ -50,7 +50,8 @@ export const getUserProfileApi = (userId) => {
         throw new Error('Failed to fetch user profile.');
       });
   };
-
+ 
+  
 export const changePasswordApi = (data) => {
     return Api.post('/api/user/change-password', data, getConfig())
         .then(response => response.data)
@@ -59,7 +60,14 @@ export const changePasswordApi = (data) => {
             throw new Error('Failed to change password.');
         });
 };
-
+export const updateUserProfileApi = (userId, userData) => {
+    return Api.put(`/api/user/update_profile/${userId}`, userData, getConfig())
+        .then(response => response.data)
+        .catch(error => {
+            console.error('Error updating user profile:', error);
+            throw new Error('Failed to update user profile.');
+        });
+};
 // product
 
 export const createProductApi = (formData) => {

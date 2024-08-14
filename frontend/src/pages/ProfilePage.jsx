@@ -1,6 +1,6 @@
 // src/pages/ProfilePage.jsx
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { getUserProfileApi } from '../apis/Api'; // Function to fetch user profile data
 import './components/ProfilePage.css'; // Add CSS for styling if needed
 
@@ -38,6 +38,9 @@ const ProfilePage = () => {
           <p><strong>Phone Number:</strong> {userProfile.phonenum}</p>
           <p><strong>Location:</strong> {userProfile.location}</p>
           {/* Add more fields as needed */}
+          <Link to={`/profile/edit/${userId}`}>
+            <button>Edit Profile</button>
+          </Link>
         </div>
       ) : (
         <p>User profile not found.</p>

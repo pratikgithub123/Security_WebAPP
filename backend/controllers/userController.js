@@ -2,6 +2,7 @@ const Users = require("../model/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+
 // Utility to validate password complexity
 const validatePassword = (password) => {
   const errors = [];
@@ -319,6 +320,7 @@ const getUserProfile = async (req, res) => {
   }
 };
 
+
 // Delete user
 const deleteUser = async (req, res) => {
   try {
@@ -347,6 +349,54 @@ const deleteUser = async (req, res) => {
     });
   }
 };
+const updateUserProfile = async (req, res) => {
+  const { userId } = req.params; // Extract the userId from the request parameters
+  const { fullname, location, phonenum, email } = req.body; // Extract the updated fields from the request body
+
+  // Check if all required fields are provided
+  if (!fullname || !location || !phonenum || !email) {
+    return res.status(400).json({
+      success: false,
+      message: "Please provide all required fields.",
+    });
+  }
+
+  try {
+    // Find the user by ID and update the fields
+    const updatedUser = await Users.findByIdAndUpdate(
+      userId,
+      {
+        fullname,
+        location,
+        phonenum,
+        email,
+      },
+      { new: true, runValidators: true } // Return the updated document and run schema validators
+    );
+
+    // If user not found, return 404 error
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
+    }
+
+    // Return success response with the updated user
+    res.status(200).json({
+      success: true,
+      message: "User profile updated successfully.",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: error.message,
+    });
+  }
+};
 
 module.exports = {
   createUser,
@@ -356,5 +406,6 @@ module.exports = {
   getUsers,
   getUserProfile,
   deleteUser,
-  guestLogin
+  guestLogin,
+  updateUserProfile
 };

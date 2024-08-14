@@ -13,6 +13,7 @@ import AuditDashboard from './pages/AuditDashboard';
 import { CartProvider } from './pages/CartContext';
 import CartPage from './pages/CartPage';
 import ChangePassword from './pages/ChangePassword';
+import EditProfilePage from './pages/EditProfile';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import OrdersPage from './pages/OrdersPage';
@@ -48,6 +49,7 @@ function App() {
             <Route path="/profile/:userId" element={<ProfilePage />} />
             <Route path="/audit" element={<AuditDashboard />} />
             <Route path="/change-password" element={<ChangePassword />} />
+            <Route path="/profile/edit/:userId" element={<EditProfilePage />} />
 
             {/* User Protected Routes */}
             <Route element={<UserRoutes />}>
