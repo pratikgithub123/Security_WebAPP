@@ -10,6 +10,18 @@
     font-family: 'Times New Roman', Times, serif;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1); 
 }
+
+.profile-icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 1.5rem;
+}
+
+.profile-icon a {
+  color: #333;
+  text-decoration: none;
+}
 .cart-container {
   position: relative;
 }

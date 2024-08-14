@@ -1,99 +1,47 @@
-import axios from 'axios';
-import React, { useState } from 'react';
-import './components/ProfilePage.css';
+// src/pages/ProfilePage.jsx
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { getUserProfileApi } from '../apis/Api'; // Function to fetch user profile data
+import './components/ProfilePage.css'; // Add CSS for styling if needed
 
 const ProfilePage = () => {
-  // State to manage form data and error messages
-  const [profileData, setProfileData] = useState({
-    fullname: '',
-    location: '',
-    phonenum: '',
-    email: ''
-  });
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
+  const { userId } = useParams(); // Get the user ID from the URL
+  const [userProfile, setUserProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  // Handle input changes
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setProfileData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
-  };
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await getUserProfileApi(userId); // Fetch user profile data
+        setUserProfile(response);
+      } catch (error) {
+        setError('Failed to load user profile.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Handle form submission
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
+    fetchUserProfile();
+  }, [userId]);
 
-    try {
-      const token = localStorage.getItem('token');
-      await axios.put('http://localhost:5000/api/user/update_profile', profileData, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      setSuccess('Profile updated successfully');
-      setError(null);
-    } catch (err) {
-      console.error('Error updating profile:', err);
-      setError('Failed to update profile. Please try again.');
-      setSuccess(null);
-    }
-  };
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
-    <div className="profile-page">
-      <h2>Update Profile</h2>
-      <form onSubmit={handleFormSubmit}>
-        <div className="form-group">
-          <label htmlFor="fullname">Full Name</label>
-          <input
-            type="text"
-            id="fullname"
-            name="fullname"
-            value={profileData.fullname}
-            onChange={handleInputChange}
-            placeholder="Full Name"
-          />
+    <div className='profile-page'>
+      <h1>User Profile</h1>
+      {userProfile ? (
+        <div>
+          <p><strong>Full Name:</strong> {userProfile.fullname}</p>
+          <p><strong>Email:</strong> {userProfile.email}</p>
+          <p><strong>Phone Number:</strong> {userProfile.phonenum}</p>
+          <p><strong>Location:</strong> {userProfile.location}</p>
+          {/* Add more fields as needed */}
         </div>
-        <div className="form-group">
-          <label htmlFor="location">Location</label>
-          <input
-            type="text"
-            id="location"
-            name="location"
-            value={profileData.location}
-            onChange={handleInputChange}
-            placeholder="Location"
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="phonenum">Phone Number</label>
-          <input
-            type="text"
-            id="phonenum"
-            name="phonenum"
-            value={profileData.phonenum}
-            onChange={handleInputChange}
-            placeholder="Phone Number"
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={profileData.email}
-            onChange={handleInputChange}
-            placeholder="Email"
-          />
-        </div>
-        <button type="submit">Update Profile</button>
-        {error && <p className="error-message">{error}</p>}
-        {success && <p className="success-message">{success}</p>}
-      </form>
+      ) : (
+        <p>User profile not found.</p>
+      )}
     </div>
   );
 };

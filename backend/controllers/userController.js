@@ -307,10 +307,9 @@ const getUsers = async (req, res) => {
   }
 };
 
-// Get user profile
 const getUserProfile = async (req, res) => {
   try {
-    const user = await Users.findById(req.params.id);
+    const user = await Users.findById(req.params.userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }

@@ -42,6 +42,24 @@ export const getAllUsersApi = () => {
 
 export const deleteUserApi = (id) => Api.delete(`/api/user/delete_user/${id}`, getConfig());
 
+export const getUserProfileApi = (userId) => {
+    return Api.get(`/api/user/profile/${userId}`, getConfig())
+      .then(response => response.data)
+      .catch(error => {
+        console.error('Error fetching user profile:', error);
+        throw new Error('Failed to fetch user profile.');
+      });
+  };
+
+export const changePasswordApi = (data) => {
+    return Api.post('/api/user/change-password', data, getConfig())
+        .then(response => response.data)
+        .catch(error => {
+            console.error('Error changing password:', error);
+            throw new Error('Failed to change password.');
+        });
+};
+
 // product
 
 export const createProductApi = (formData) => {
@@ -64,6 +82,12 @@ export const updateProductApi = (id, formData) => {
     });
 };
 
+
+
+
+
+
+
 export const deleteProductApi = (id) => Api.delete(`/api/product/delete_product/${id}`);
 
 //audit
@@ -76,6 +100,9 @@ export const getAuditLogs = async () => {
       throw error;
     }
   };
+
+
+
 
 
 

@@ -9,8 +9,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 import Footer from './component/Footer';
 import Navbar from './component/Navbar';
+import AuditDashboard from './pages/AuditDashboard';
 import { CartProvider } from './pages/CartContext';
 import CartPage from './pages/CartPage';
+import ChangePassword from './pages/ChangePassword';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import OrdersPage from './pages/OrdersPage';
@@ -25,8 +27,6 @@ import AdminDashboardOrderDetails from './pages/admin/AdminDashboardOrderDetails
 import AdminEditProduct from './pages/admin/AdminEditProduct';
 import AdminRoutes from './protected_routes/AdminRoutes';
 import UserRoutes from './protected_routes/UserRoutes';
-import AuditDashboard from './pages/AuditDashboard';
-
 function App() {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -45,8 +45,9 @@ function App() {
             <Route path='/register' element={<Register />} />
             <Route path='/login' element={<Login />} />
             <Route path='/resetpassword' element={<ResetPassword />} />
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile/:userId" element={<ProfilePage />} />
             <Route path="/audit" element={<AuditDashboard />} />
+            <Route path="/change-password" element={<ChangePassword />} />
 
             {/* User Protected Routes */}
             <Route element={<UserRoutes />}>

@@ -1,4 +1,4 @@
-import { faShoppingCart, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faShoppingCart, faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons'; // Import the profile icon
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -51,7 +51,7 @@ const Navbar = () => {
     };
 
     fetchCartData(); // Fetch initially
-    const interval = setInterval(fetchCartData, 100); // Adjusted interval to every 100 miliseconds
+    const interval = setInterval(fetchCartData, 100); // Adjusted interval to every 100 milliseconds
 
     return () => clearInterval(interval); // Clean up on component unmount
   }, [user]);
@@ -111,6 +111,13 @@ const Navbar = () => {
           <FontAwesomeIcon icon={faShoppingCart} className='cart' />
           {uniqueProductCount > 0 && <span className='cart-quantity'>{uniqueProductCount}</span>}
         </Link>
+      )}
+      {user && ( // Add profile icon if the user is logged in
+        <div className='profile-icon'>
+          <Link to={`/profile/${user._id}`}>
+            <FontAwesomeIcon icon={faUser} />
+          </Link>
+        </div>
       )}
     </div>
   );
