@@ -11,10 +11,6 @@ router.get('/get_users',  userController.getUsers);
 
 
 router.delete('/delete_user/:id',  userController.deleteUser);
-router.post('/change_password', userController.changePassword);
-router.post('/guest_login', userController.guestLogin);
-
-
 
 
 
