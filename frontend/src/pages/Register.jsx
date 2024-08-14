@@ -42,15 +42,21 @@ const Register = () => {
     registerApi(data)
       .then((res) => {
         if (res.data.success) {
-          toast.success(res.data.message);
+          toast.success(res.data.message, {
+            position: "top-center",
+          });
           navigate('/login');
         } else {
-          toast.error(res.data.message);
+          toast.error(res.data.message, {
+            position: "top-center",
+          });
         }
       })
       .catch((err) => {
         console.log(err);
-        toast.error('Internal Server Error!');
+        toast.error('Internal Server Error!', {
+          position: "top-center",
+        });
       });
   };
 

@@ -11,7 +11,9 @@ const Card = ({ product }) => {
 
   const handleAddToCart = async () => {
     if (!userId) {
-      toast.warn('Please log in to add items to the cart');
+      toast.warn('Please log in to add items to the cart', {
+        position: "top-center", // Position the toast in the center of the top
+      });
       navigate('/login'); // Redirect to login if user is not logged in
       return;
     }
@@ -25,15 +27,21 @@ const Card = ({ product }) => {
     try {
       const response = await addtoCartsApi(formData);
       if (response.data.success) {
-        toast.success('Item Added Successfully');
+        toast.success('Item Added to Cart Successfully', {
+          position: "top-center", // Position the toast in the center of the top
+        });
         console.log(`Added ${product.productName} to the cart ${quantity} piece`);
       } else {
-        toast.error('Error adding item to cart');
+        toast.error('Error adding item to cart', {
+          position: "top-center", // Position the toast in the center of the top
+        });
         console.error('Error adding to cart:', response.data.message);
         
       }
     } catch (error) {
-      toast.warn('You are logged in as Guest Please Login First To Add on Cart');
+      toast.warn('You are logged in as Guest. Please Login First To Add on Cart', {
+        position: "top-center", // Position the toast in the center of the top
+      });
       console.error('Error adding to cart:', error.message);
       navigate('/login');
     }

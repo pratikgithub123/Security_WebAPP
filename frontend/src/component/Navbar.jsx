@@ -14,13 +14,17 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.clear();
-    toast.success('You have successfully logged out.'); // Show success toast
+    toast.success('You have successfully logged out.', {
+      position: "top-center", // Position the toast in the center of the top
+    }); // Show success toast
     navigate('/login');
   };
 
   const handleCartClick = () => {
     if (!user) {
-      toast.warn('Please log in to view your cart.');
+      toast.warn('Please log in to view your cart.', {
+        position: "top-center", // Position the toast in the center of the top
+      });
       navigate('/login');
     }
   };

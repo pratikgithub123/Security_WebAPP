@@ -37,7 +37,9 @@ const CartPage = () => {
       const response = await deleteCartApi(formData);
       if (response.data.success) {
         setCartItems(cartItems.filter(item => item.product?._id !== productId));
-        toast.success("Item Deleted From Cart");
+        toast.success("Item Deleted From Cart", {
+          position: "top-center", // Position the toast in the center of the top
+        });
       } else {
         console.error('Error deleting cart item:', response.data.message);
       }
@@ -58,7 +60,9 @@ const CartPage = () => {
         const response = await clearCartApi(id);
         if (response.data.success) {
           setCartItems([]);
-          toast.success("All items removed from cart");
+          toast.success("All items removed from cart", {
+            position: "top-center", // Position the toast in the center of the top
+          });
           
         } else {
           console.error('Error clearing cart:', response.data.message);
@@ -82,7 +86,9 @@ const CartPage = () => {
             ? { ...item, quantity: newQuantity }
             : item
         ));
-        toast.success("Cart updated successfully");
+        toast.success("Cart updated successfully", {
+          position: "top-center", // Position the toast in the center of the top
+        });
       } else {
         console.error('Error updating cart:', response.data.message);
       }
@@ -95,7 +101,9 @@ const CartPage = () => {
 
   const handleCreateOrder = async () => {
     if (!phoneNumber || !location) {
-      toast.error("Phone number and location are required");
+      toast.error("Phone number and location are required", {
+        position: "top-center", // Position the toast in the center of the top
+      });
       return;
     }
 
@@ -106,7 +114,9 @@ const CartPage = () => {
           setCartItems([]);
           setPhoneNumber('');
           setLocation('');
-          toast.success("Order created successfully!");
+          toast.success("Order created successfully!", {
+            position: "top-center", // Position the toast in the center of the top
+          });
         } else {
           toast.error("Error creating order: " + response.message);
         }

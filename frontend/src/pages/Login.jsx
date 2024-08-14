@@ -31,7 +31,7 @@ const Login = () => {
             setErrors(validationErrors);
             return;
         }
-
+    
         loginApi({ email, password })
             .then((res) => {
                 if (!res.data.success) {
@@ -40,38 +40,59 @@ const Login = () => {
                         const remainingTime = Math.max(lockoutEndTime - new Date(), 0);
                         const remainingMinutes = Math.floor(remainingTime / 60000);
                         const remainingSeconds = Math.floor((remainingTime % 60000) / 1000);
-
-                        let message = `Account is locked. For ${remainingMinutes} minute${remainingMinutes !== 1 ? 's' : ''}`;
+    
+                        let message = `Account is locked. Please try again in ${remainingMinutes} minute${remainingMinutes !== 1 ? 's' : ''}`;
                         if (remainingSeconds > 0) {
                             message += ` and ${remainingSeconds} second${remainingSeconds !== 1 ? 's' : ''}.`;
                         } else {
                             message += '.';
                         }
-
-                        toast.error(message);
+    
+                        toast.error(message, {
+                            position: "top-center",
+                        });
+                    } else if (res.data.message === 'Account does not exist') {
+                        toast.error('Account does not exist. Please register first.', {
+                            position: "top-center",
+                        });
+                    } else if (res.data.message === 'Incorrect password') {
+                        toast.error('Incorrect password. Please try again.', {
+                            position: "top-center",
+                        });
                     } else {
-                        toast.error(res.data.message);
+                        toast.error(res.data.message, {
+                            position: "top-center",
+                        });
                     }
                 } else {
-                    toast.success(res.data.message);
+                    toast.success('Login successful!', {
+                        position: "top-center",
+                    });
                     localStorage.setItem('token', res.data.token);
                     localStorage.setItem('user', JSON.stringify(res.data.userData));
                     navigate('/');
                 }
             })
-            .catch(() => toast.error('Server Error!'));
+            .catch(() => toast.error('Server Error!', {
+                position: "top-center",
+            }));
     };
+    
 
     const handleGuestLogin = () => {
         guestLoginApi()
             .then((res) => {
                 if (res.data.success) {
-                    toast.success('Logged in as guest');
+                    toast.success('Logged in as guest', {
+                        position: "top-center", // Position the toast in the center of the top
+                    });
                     localStorage.setItem('token', res.data.token);
                     localStorage.setItem('user', JSON.stringify(res.data.userData));
                     navigate('/');
                 } else {
-                    toast.error(res.data.message || 'Guest login failed');
+                    toast.error(res.data.message || 'Guest login failed', {
+                        position: "top-center", // Position the toast in the center of the top
+                    });
                 }
             })
             .catch(() => toast.error('Server Error!'));
