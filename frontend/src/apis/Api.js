@@ -21,6 +21,16 @@ const getConfig = () => {
 console.log(`Auth Header: ${localStorage.getItem('token')}`);
 
 export const guestLoginApi = () => Api.post('/api/user/guest_login');
+
+export const getAuditLogs = async (queryParams) => {
+    try {
+        const response = await Api.get('/api/audit', { params: queryParams, ...getConfig() });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching audit logs:', error);
+        throw new Error('Failed to fetch audit logs.');
+    }
+};
   
 
 //user
@@ -99,15 +109,7 @@ export const updateProductApi = (id, formData) => {
 export const deleteProductApi = (id) => Api.delete(`/api/product/delete_product/${id}`);
 
 //audit
-export const getAuditLogs = async () => {
-    try {
-      const response = await axios.get('/api/audit/get_logs');
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching audit logs:', error);
-      throw error;
-    }
-  };
+
 
 
 
@@ -119,7 +121,7 @@ export const getAuditLogs = async () => {
 
 export const addToCartApi = (data) => Api.post('/api/cart/add', data, getConfig());
 
-export const getAllCartsApi = (userId) => Api.get(`/api/cart/getcart/${userId}`, getConfig());
+// export const getAllCartsApi = (userId) => Api.get(`/api/cart/getcart/${userId}`, getConfig());
 
 export const addtoCartsApi = (formData) => Api.post('/api/cart/add', formData, getConfig());
 

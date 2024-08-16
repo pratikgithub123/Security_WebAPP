@@ -50,6 +50,7 @@ function App() {
             <Route path="/audit" element={<AuditDashboard />} />
             <Route path="/change-password" element={<ChangePassword />} />
             <Route path="/profile/edit/:userId" element={<EditProfilePage />} />
+            <Route path="/audit" element={<AuditDashboard />} />
 
             {/* User Protected Routes */}
             <Route element={<UserRoutes />}>

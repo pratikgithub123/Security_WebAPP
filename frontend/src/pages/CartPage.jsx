@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { clearCartApi, createOrderApi, deleteCartApi, getAllCartsApi, updateCartApi } from '../apis/Api';
-
+import { clearCartApi, createOrderApi, deleteCartApi, getCart, updateCartApi } from '../apis/Api';
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -15,14 +14,10 @@ const CartPage = () => {
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const response = await getAllCartsApi(id);
-        if (response.data.success) {
-          setCartItems(response.data.cart.items || []);
-        } else {
-          console.error('Error fetching cart:', response.data.message);
-        }
+        const response = await getCart(id); // Changed to getCart function
+        setCartItems(response.cart.items || []);
       } catch (error) {
-        console.error('Error fetching cart:', error);
+        toast.error('Error fetching cart. Please try again.');
       } finally {
         setLoading(false);
       }
@@ -35,65 +30,58 @@ const CartPage = () => {
     try {
       const formData = { userId: id, productId };
       const response = await deleteCartApi(formData);
-      if (response.data.success) {
-        setCartItems(cartItems.filter(item => item.product?._id !== productId));
-        toast.success("Item Deleted From Cart", {
-          position: "top-center", // Position the toast in the center of the top
-        });
+      if (response.success) {
+        setCartItems(cartItems.filter(item => item.product._id !== productId));
+        toast.success('Item removed from cart.');
       } else {
-        console.error('Error deleting cart item:', response.data.message);
+        toast.error('Error deleting cart item.');
       }
     } catch (error) {
-      console.error('Error deleting cart item:', error);
+      toast.error('Error deleting cart item.');
     }
   };
 
   const confirmAndDelete = (productId) => {
-    if (window.confirm("Are you sure you want to delete this item?")) {
+    if (window.confirm('Are you sure you want to delete this item?')) {
       handleDeleteCartApi(productId);
     }
   };
 
   const handleClearCartApi = async () => {
-    if (window.confirm("Are you sure you want to clear the entire cart?")) {
+    if (window.confirm('Are you sure you want to clear the entire cart?')) {
       try {
         const response = await clearCartApi(id);
-        if (response.data.success) {
+        if (response.success) {
           setCartItems([]);
-          toast.success("All items removed from cart", {
-            position: "top-center", // Position the toast in the center of the top
-          });
-          
+          toast.success('All items removed from cart.');
         } else {
-          console.error('Error clearing cart:', response.data.message);
+          toast.error('Error clearing cart.');
         }
       } catch (error) {
-        console.error('Error clearing cart:', error);
+        toast.error('Error clearing cart.');
       }
     }
   };
 
   const handleUpdateQuantity = async (productId, newQuantity) => {
-    if (newQuantity < 1) return; // Prevent updating to invalid quantity
+    if (newQuantity < 1) return;
 
     setUpdating(true);
     try {
       const formData = { userId: id, productId, quantity: newQuantity };
       const response = await updateCartApi(formData);
-      if (response.data.success) {
+      if (response.success) {
         setCartItems(cartItems.map(item =>
-          item.product?._id === productId
+          item.product._id === productId
             ? { ...item, quantity: newQuantity }
             : item
         ));
-        toast.success("Cart updated successfully", {
-          position: "top-center", // Position the toast in the center of the top
-        });
+        toast.success('Cart updated successfully.');
       } else {
-        console.error('Error updating cart:', response.data.message);
+        toast.error('Error updating cart.');
       }
     } catch (error) {
-      console.error('Error updating cart:', error);
+      toast.error('Error updating cart.');
     } finally {
       setUpdating(false);
     }
@@ -101,40 +89,38 @@ const CartPage = () => {
 
   const handleCreateOrder = async () => {
     if (!phoneNumber || !location) {
-      toast.error("Phone number and location are required", {
-        position: "top-center", // Position the toast in the center of the top
-      });
+      toast.error('Phone number and location are required.');
       return;
     }
 
-    if (window.confirm("Are you sure you want to proceed to create an order?")) {
+    if (phoneNumber.length !== 10) {
+      toast.error('Phone number must be exactly 10 digits.');
+      return;
+    }
+
+    if (window.confirm('Are you sure you want to proceed to create an order?')) {
       try {
         const response = await createOrderApi(id, phoneNumber, location);
         if (response.success) {
           setCartItems([]);
           setPhoneNumber('');
           setLocation('');
-          toast.success("Order created successfully!", {
-            position: "top-center", // Position the toast in the center of the top
-          });
+          toast.success('Order created successfully.');
         } else {
-          toast.error("Error creating order: " + response.message);
+          toast.error('Error creating order.');
         }
       } catch (error) {
-        console.error('Error creating order:', error);
-        toast.error("Error creating order. Please try again.");
+        toast.error('Error creating order. Please try again.');
       }
     }
   };
 
   const handlePhoneNumberChange = (e) => {
-    // Allow only numbers
-    const value = e.target.value.replace(/\D/g, '');
+    const value = e.target.value.replace(/\D/g, '').slice(0, 10);
     setPhoneNumber(value);
   };
 
   const handleLocationChange = (e) => {
-    // Convert input to uppercase
     setLocation(e.target.value.toUpperCase());
   };
 
@@ -166,23 +152,23 @@ const CartPage = () => {
             </thead>
             <tbody>
               {cartItems.map((item) => (
-                <tr key={item.product?._id}>
+                <tr key={item.product._id}>
                   <td>
-                    <img src={item.product?.productImageUrl} alt={item.product?.productName} className="product-image" style={{ width: '100px', height: 'auto' }} />
+                    <img src={item.product.productImageUrl} alt={item.product.productName} className="product-image" style={{ width: '100px', height: 'auto' }} />
                   </td>
-                  <td>{item.product?.productName || 'Unknown'}</td>
-                  <td>NPR {item.product?.productPrice?.toFixed(2) || '0.00'}</td>
+                  <td>{item.product.productName || 'Unknown'}</td>
+                  <td>NPR {item.product.productPrice?.toFixed(2) || '0.00'}</td>
                   <td>
                     <input
                       type="number"
                       min="1"
                       value={item.quantity || 1}
-                      onChange={(e) => handleUpdateQuantity(item.product?._id, Number(e.target.value))}
+                      onChange={(e) => handleUpdateQuantity(item.product._id, Number(e.target.value))}
                       disabled={updating}
                     />
                   </td>
                   <td>
-                    <button onClick={() => confirmAndDelete(item.product?._id)} type="button" className="btn btn-danger">
+                    <button onClick={() => confirmAndDelete(item.product._id)} type="button" className="btn btn-danger">
                       Remove
                     </button>
                   </td>
@@ -198,11 +184,12 @@ const CartPage = () => {
           <div className="mb-3">
             <label htmlFor="phoneNumber" className="form-label">Phone Number</label>
             <input
-              type="text"
+              type="text" // Change type to text to allow formatting
               id="phoneNumber"
               value={phoneNumber}
               onChange={handlePhoneNumberChange}
               className="form-control"
+              maxLength="10"
             />
           </div>
           <div className="mb-3">

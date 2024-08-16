@@ -44,6 +44,9 @@ const EditProfilePage = () => {
     e.preventDefault();
     try {
       await updateUserProfileApi(userId, userProfile);
+      // Update localStorage with new user data
+      const updatedUser = { ...userProfile, _id: userId }; // Add other required fields if necessary
+      localStorage.setItem('user', JSON.stringify(updatedUser));
       setSuccessMessage('Profile updated successfully.');
       setTimeout(() => navigate(`/profile/${userId}`), 2000); // Navigate back to profile after 2 seconds
     } catch (error) {

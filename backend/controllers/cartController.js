@@ -2,9 +2,12 @@ const Cart = require('../model/cartModel');
 const Product = require("../model/productModel");
 const User = require("../model/userModel");
 const Order = require('../model/orderModel');
+const { logAuditTrail } = require('./auditTrailController');
 
 const addToCart = async (req, res) => {
     const { userId, productId, quantity } = req.body;
+    const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
     if (!userId || !productId || !quantity) {
         return res.status(400).json({
             success: false,
@@ -46,6 +49,9 @@ const addToCart = async (req, res) => {
 
         await cart.save();
 
+        // Log the activity
+        await logAuditTrail(userId, 'Add to Cart', `Product ${productId} added with quantity ${quantity}`, ipAddress);
+
         res.status(200).json({
             success: true,
             message: "Item added to cart successfully",
@@ -63,8 +69,16 @@ const addToCart = async (req, res) => {
 
 const getCart = async (req, res) => {
     const userId = req.params.userId;
+    const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
     try {
+        if (!userId) {
+            return res.status(400).json({
+                success: false,
+                message: "UserId is required"
+            });
+        }
+
         const cart = await Cart.findOne({ user: userId }).populate('items.product');
 
         if (!cart) {
@@ -74,6 +88,9 @@ const getCart = async (req, res) => {
                 message: "Cart not found"
             });
         }
+
+        // Remove log activity from this function
+        // await logAuditTrail(userId, 'Get Cart', 'Fetched cart details', ipAddress);
 
         res.status(200).json({
             success: true,
@@ -91,8 +108,11 @@ const getCart = async (req, res) => {
     }
 }
 
+
+
 const deleteCartItem = async (req, res) => {
     const { userId, productId } = req.body;
+    const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
     if (!userId || !productId) {
         return res.status(400).json({
@@ -115,6 +135,9 @@ const deleteCartItem = async (req, res) => {
         if (itemIndex > -1) {
             cart.items.splice(itemIndex, 1);
             await cart.save();
+
+            // Log the activity
+            await logAuditTrail(userId, 'Delete Cart Item', `Removed product ${productId} from cart`, ipAddress);
 
             return res.status(200).json({
                 success: true,
@@ -140,6 +163,7 @@ const deleteCartItem = async (req, res) => {
 
 const clearCart = async (req, res) => {
     const { userId } = req.body;
+    const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
     if (!userId) {
         return res.status(400).json({
@@ -161,6 +185,9 @@ const clearCart = async (req, res) => {
         cart.items = [];  // Clear all items
         await cart.save();
 
+        // Log the activity
+        await logAuditTrail(userId, 'Clear Cart', 'Cleared all items from cart', ipAddress);
+
         return res.status(200).json({
             success: true,
             message: "All items removed from cart successfully",
@@ -177,9 +204,9 @@ const clearCart = async (req, res) => {
     }
 }
 
-// Add the updateCartItem function
 const updateCartItem = async (req, res) => {
     const { userId, productId, quantity } = req.body;
+    const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
     if (!userId || !productId || !quantity) {
         return res.status(400).json({
@@ -202,6 +229,9 @@ const updateCartItem = async (req, res) => {
         if (itemIndex > -1) {
             cart.items[itemIndex].quantity = quantity;
             await cart.save();
+
+            // Log the activity
+            await logAuditTrail(userId, 'Update Cart Item', `Updated product ${productId} quantity to ${quantity}`, ipAddress);
 
             return res.status(200).json({
                 success: true,
@@ -227,61 +257,63 @@ const updateCartItem = async (req, res) => {
 
 const checkout = async (req, res) => {
     const { userId, phoneNumber, location } = req.body;
-  
+    const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
     if (!userId || !phoneNumber || !location) {
-      return res.status(400).json({
-        success: false,
-        message: "UserId, phoneNumber, and location are required"
-      });
-    }
-  
-    try {
-      const cart = await Cart.findOne({ user: userId }).populate('items.product');
-  
-      if (!cart || cart.items.length === 0) {
         return res.status(400).json({
-          success: false,
-          message: "Cart is empty"
+            success: false,
+            message: "UserId, phoneNumber, and location are required"
         });
-      }
-  
-      const orderItems = cart.items.map(item => ({
-        productId: item.product._id,
-        quantity: item.quantity
-      }));
-  
-      const order = new Order({
-        userId: userId,
-        items: orderItems,
-        totalPrice: cart.items.reduce((total, item) => {
-          const price = item.product?.productPrice || 0;
-          const quantity = item.quantity || 0;
-          return total + (price * quantity);
-        }, 0).toFixed(2),
-        phoneNumber: phoneNumber, // Include phoneNumber
-        location: location // Include location
-      });
-  
-      await order.save();
-  
-      cart.items = []; // Clear cart
-      await cart.save();
-  
-      res.status(200).json({
-        success: true,
-        message: "Order placed successfully",
-        order
-      });
-    } catch (error) {
-      console.error('Error during checkout:', error);
-      res.status(500).json({
-        success: false,
-        message: "Internal Server Error"
-      });
     }
-  };
 
+    try {
+        const cart = await Cart.findOne({ user: userId }).populate('items.product');
 
+        if (!cart || cart.items.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Cart is empty"
+            });
+        }
+
+        const orderItems = cart.items.map(item => ({
+            productId: item.product._id,
+            quantity: item.quantity
+        }));
+
+        const order = new Order({
+            userId: userId,
+            items: orderItems,
+            totalPrice: cart.items.reduce((total, item) => {
+                const price = item.product?.productPrice || 0;
+                const quantity = item.quantity || 0;
+                return total + (price * quantity);
+            }, 0).toFixed(2),
+            phoneNumber: phoneNumber,
+            location: location
+        });
+
+        await order.save();
+
+        cart.items = []; // Clear cart
+        await cart.save();
+
+        // Log the activity
+        await logAuditTrail(userId, 'Checkout', `Order placed with total price ${order.totalPrice}`, ipAddress);
+
+        res.status(200).json({
+            success: true,
+            message: "Order placed successfully",
+            order
+        });
+    } catch (error) {
+        console.error('Error during checkout:', error);
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
+    }
+}
 
 module.exports = {
     addToCart, getCart, deleteCartItem, clearCart, updateCartItem, checkout

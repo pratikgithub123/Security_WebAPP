@@ -1,56 +1,103 @@
-// components/AuditDashboard.js
-import React, { useEffect, useState } from 'react';
+import { DatePicker, Table, notification } from 'antd';
+import moment from 'moment';
+import React, { useCallback, useEffect, useState } from 'react';
 import { getAuditLogs } from '../apis/Api';
-import './components/AuditDashboard.css'; // Include CSS for styling
+
+const { RangePicker } = DatePicker;
 
 const AuditDashboard = () => {
-  const [logs, setLogs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+    const [auditLogs, setAuditLogs] = useState([]);
+    const [userId, setUserId] = useState('');
+    const [actionType, setActionType] = useState('');
+    const [dates, setDates] = useState([]);
 
-  useEffect(() => {
-    const fetchLogs = async () => {
-      try {
-        const data = await getAuditLogs();
-        setLogs(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const fetchLogs = useCallback(async () => {
+        const queryParams = {
+            userId,
+            actionType,
+            startDate: dates[0]?.format('YYYY-MM-DD'),
+            endDate: dates[1]?.format('YYYY-MM-DD'),
+        };
 
-    fetchLogs();
-  }, []);
+        try {
+            const data = await getAuditLogs(queryParams);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+            if (data.success && Array.isArray(data.auditLogs)) {
+                // Deduplicate logs
+                const uniqueLogs = data.auditLogs.reduce((acc, log) => {
+                    const key = `${log.userId}-${log.actionType}-${log.timestamp}`;
+                    if (!acc.keys.has(key)) {
+                        acc.keys.add(key);
+                        acc.result.push(log);
+                    }
+                    return acc;
+                }, { keys: new Set(), result: [] }).result;
 
-  return (
-    <div>
-      <h2>Audit Dashboard</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Action</th>
-            <th>Details</th>
-            <th>Timestamp</th>
-          </tr>
-        </thead>
-        <tbody>
-          {logs.map((log) => (
-            <tr key={log._id}>
-              <td>{log.userId}</td>
-              <td>{log.action}</td>
-              <td>{log.details}</td>
-              <td>{new Date(log.timestamp).toLocaleString()}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+                setAuditLogs(uniqueLogs);
+            } else {
+                setAuditLogs([]);
+            }
+        } catch (error) {
+            console.error('Error fetching audit logs:', error);
+            notification.error({
+                message: 'Error',
+                description: 'Failed to fetch audit logs. Please try again later.',
+            });
+            setAuditLogs([]);
+        }
+    }, [userId, actionType, dates]);
+
+    useEffect(() => {
+        fetchLogs();
+    }, [fetchLogs]); // Only re-run fetchLogs if dependencies change
+
+    const columns = [
+        {
+            title: 'User ID',
+            dataIndex: 'userId',
+            key: 'userId',
+        },
+        {
+            title: 'Email',
+            dataIndex: 'email',
+            key: 'email',
+        },
+        {
+            title: 'Full Name',
+            dataIndex: 'fullname',
+            key: 'fullname',
+        },
+        {
+            title: 'Action Type',
+            dataIndex: 'actionType',
+            key: 'actionType',
+        },
+        {
+            title: 'Details',
+            dataIndex: 'details',
+            key: 'details',
+        },
+        
+        {
+            title: 'Timestamp',
+            dataIndex: 'timestamp',
+            key: 'timestamp',
+            render: (text) => moment(text).format('YYYY-MM-DD HH:mm:ss'),
+        },
+    ];
+
+    return (
+        <div>
+            <h1>Audit Dashboard</h1>
+            
+            <Table
+                columns={columns}
+                dataSource={auditLogs}
+                rowKey={(record) => `${record.userId}-${record.actionType}-${record.timestamp}`}
+                pagination={{ pageSize: 10 }}
+            />
+        </div>
+    );
 };
 
 export default AuditDashboard;

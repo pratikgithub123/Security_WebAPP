@@ -9,7 +9,7 @@ import './Navbar.css';
 
 const Navbar = () => {
   const [uniqueProductCount, setUniqueProductCount] = useState(0);
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user")); // Retrieve user from localStorage
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -106,8 +106,8 @@ const Navbar = () => {
           </>
         )}
       </ul>
-      {!user?.isAdmin && ( // Render cart icon only if not an admin
-        <Link to={`/cart/${user?._id}`} className='cart-container' onClick={handleCartClick}>
+      {user && ( // Render cart icon only if the user is logged in
+        <Link to={`/cart/${user._id}`} className='cart-container' onClick={handleCartClick}>
           <FontAwesomeIcon icon={faShoppingCart} className='cart' />
           {uniqueProductCount > 0 && <span className='cart-quantity'>{uniqueProductCount}</span>}
         </Link>

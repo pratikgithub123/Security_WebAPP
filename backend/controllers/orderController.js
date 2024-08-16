@@ -1,8 +1,10 @@
 const Order = require('../model/orderModel');
 const Cart = require('../model/cartModel');
+const { logAuditTrail } = require('./auditTrailController'); // Assuming you have a logging function here
 
 const createOrder = async (req, res) => {
     const { userId, phoneNumber, location } = req.body;
+    const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
     if (!userId || !phoneNumber || !location) {
         return res.status(400).json({
@@ -41,8 +43,8 @@ const createOrder = async (req, res) => {
             userId,
             items: orderItems,
             totalPrice,
-            phoneNumber, // Add phoneNumber
-            location // Add location
+            phoneNumber,
+            location
         });
 
         await order.save();
@@ -50,6 +52,9 @@ const createOrder = async (req, res) => {
         // Clear the cart
         cart.items = [];
         await cart.save();
+
+        // Log the activity
+        await logAuditTrail(userId, 'Create Order', `Order created with total price ${totalPrice}`, ipAddress);
 
         res.status(201).json({
             success: true,
@@ -66,9 +71,9 @@ const createOrder = async (req, res) => {
     }
 };
 
-
 const getUserOrders = async (req, res) => {
     const userId = req.params.userId;
+    const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
     try {
         // Fetch the user's orders and populate product details
@@ -84,6 +89,9 @@ const getUserOrders = async (req, res) => {
             });
         }
 
+        // Log the activity
+        
+
         res.status(200).json({
             success: true,
             orders
@@ -98,21 +106,17 @@ const getUserOrders = async (req, res) => {
     }
 };
 
-
-        
-  
-
 const getAllOrders = async (req, res) => {
     try {
         // Fetch all orders and populate both product and user details
         const orders = await Order.find()
             .populate({
-                path: 'items.productId', 
-                select: 'productName productPrice' 
+                path: 'items.productId',
+                select: 'productName productPrice'
             })
             .populate({
-                path: 'userId', 
-                select: 'fullname email location phonenum' 
+                path: 'userId',
+                select: 'fullname email location phonenum'
             });
 
         if (!orders || orders.length === 0) {
@@ -136,14 +140,9 @@ const getAllOrders = async (req, res) => {
     }
 };
 
-module.exports = {
-    getAllOrders
-};
-
-
-
 const deleteOrder = async (req, res) => {
     const { orderId } = req.params;
+    const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
     try {
         const order = await Order.findByIdAndDelete(orderId);
@@ -154,6 +153,9 @@ const deleteOrder = async (req, res) => {
                 message: "Order not found"
             });
         }
+
+        // Log the activity
+        await logAuditTrail(order.userId, 'Delete Order', `Order with ID ${orderId} deleted`, ipAddress);
 
         res.status(200).json({
             success: true,
