@@ -85,10 +85,14 @@ const AdminDashboard = () => {
                     Add Product
                 </button>
                 <div className='links'>
-                    <Link to="/admin/dashboarduser" className="link">
+                <Link to="/audit" className="productdetails">
+                    Audit Details <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '5px' }} />
+                </Link>
+                    
+                    <Link to="/admin/dashboarduser" className="productdetails">
                         User Details <FontAwesomeIcon icon={faArrowRight} />
                     </Link>
-                    <Link to="/admin/dashboardorder" className="link">
+                    <Link to="/admin/dashboardorder" className="productdetails">
                         Order Details <FontAwesomeIcon icon={faArrowRight} />
                     </Link>
                 </div>

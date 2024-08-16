@@ -49,6 +49,9 @@ const AdminDashboardUserDetails = () => {
       <div className="m-5">
         <div className="d-flex justify-content-between">
           <h1>Admin Dashboard</h1>
+          <Link to="/audit" className="productdetails">
+            Audit Dashboard <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '5px' }} />
+          </Link>
           <Link to="/admin/dashboard" className="productdetails">
             Product Details <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '5px' }} />
           </Link>
