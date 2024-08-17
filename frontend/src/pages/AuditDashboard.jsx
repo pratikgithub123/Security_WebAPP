@@ -49,7 +49,7 @@ const AuditDashboard = () => {
 
     useEffect(() => {
         fetchLogs();
-    }, [fetchLogs]); // Only re-run fetchLogs if dependencies change
+    }, [fetchLogs]); 
 
     const columns = [
         {
