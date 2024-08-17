@@ -67,11 +67,11 @@ const createToken = (user) => {
   return jwt.sign(
     { id: user._id, isAdmin: user.isAdmin },
     process.env.JWT_SECRET,
-    { expiresIn: '3600' } 
+    { expiresIn: '90d' } 
   );
 };
 
-// Register a new user
+
 const createUser = async (req, res) => {
   const { fullname, location, phonenum, email, password } = req.body;
 
