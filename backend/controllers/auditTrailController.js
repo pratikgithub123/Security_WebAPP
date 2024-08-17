@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const AuditTrail = require('../model/auditTrailModel');
-const User = require('../model/userModel'); // Import the User model
+const User = require('../model/userModel'); // Import the User mo
 
 const getAuditLogs = async (req, res) => {
     const { userId, actionType, startDate, endDate } = req.query;

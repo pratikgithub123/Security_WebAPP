@@ -100,8 +100,7 @@ const Login = () => {
 
     return (
         <div className="login-container">
-            <img src={topRightImage} alt="Top Right" className="top-right-image" />
-            <img src={bottomLeftImage} alt="Bottom Left" className="bottom-left-image" />
+            
             <div className="login-form-container">
                 <h1 className="login-title">Please Log in First!</h1>
                 <form>

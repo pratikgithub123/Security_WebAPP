@@ -62,8 +62,7 @@ const Register = () => {
 
   return (
     <div className="register-container">
-      <img src={topRightImage} alt="Top Right" className="top-right-image" />
-      <img src={bottomLeftImage} alt="Bottom Left" className="bottom-left-image" />
+      
       <div className="register-form-container">
         <h1 className="register-title">Create an Account!</h1>
         <form>
