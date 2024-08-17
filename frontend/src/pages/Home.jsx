@@ -9,7 +9,7 @@ const Home = () => {
     const [cart, setCart] = useState({});
 
     useEffect(() => {
-        // Fetch all products from the API
+     
         getAllProductsApi().then((res) => {
             setProducts(res.data.products);
         }).catch((err) => {
