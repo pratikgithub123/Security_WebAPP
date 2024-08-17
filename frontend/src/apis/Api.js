@@ -33,7 +33,7 @@ export const getAuditLogs = async (queryParams) => {
 };
   
 
-//user
+
 
 export const registerApi = (data) => Api.post("/api/user/create", data);
 
